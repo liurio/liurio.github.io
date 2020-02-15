@@ -1,7 +1,7 @@
 ---
 logout: post
 title: Flink Table API && Flink SQL分析
-tags: [flink,all]
+tags: [flink,all,sql]
 ---
 
 ## Table API/SQL简介
