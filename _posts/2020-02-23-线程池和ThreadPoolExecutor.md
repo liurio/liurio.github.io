@@ -57,9 +57,83 @@ public static ScheduledExecutorService newScheduledThreadPool(int corePoolSize) 
 }
 ```
 
+## 线程池的创建
+
+线程池的创建一般有两种方式：***Executors***和***ThreadPoolExecutor***
+
+### Executors的方式
+
+![img](https://img2018.cnblogs.com/blog/985599/201905/985599-20190521225958821-275322901.png)
+
+使用Executors创建线程池有两个弊端：
+
+> - FixedThreadPool和SingleThreadExecutor: 允许请求的队列长度为 Integer.MAX_VALUE,可能堆积大量的请求，从而导致OOM。
+> - CachedThreadPool 和 ScheduledThreadPool：允许创建的线程数量为 Integer.MAX_VALUE ，可能会创建大量线程，从而导致OOM。
+
+### ThreadPoolExecutor的方式
+
+![img](https://img-blog.csdn.net/20180628125931735?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dhbmdteDE5OTMzMjg=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
+
+ThreadPoolExecutor的构造函数如下：
+
+```java
+public ThreadPoolExecutor(int corePoolSize, //线程池核心池大小
+                          int maximumPoolSize,//线程池最大线程数量
+                          long keepAliveTime,//当线程数大于核心时，此为终止前多余的空闲线程等待新任务的最长时间。
+                          TimeUnit unit,//上一个参数的单位
+                          BlockingQueue<Runnable> workQueue,//用来储存等待执行任务的队列。
+                          ThreadFactory threadFactory //线程工厂
+                         ) {
+    ....
+}
+```
+
+ExecutorService是ThreadPoolExecutor的顶层接口，我们创建线程池时尽量通过ThreadPoolExecutor创建。各个参数的解释如下：
+
+- corePoolSize: 核心池的大小，在创建了线程池后，线程池中的线程数为0，当有任务来之后，就会创建一个线程去执行任务，当线程池中的线程数目达到corePoolSize后，就会把到达的任务放到缓存队列当中;
+
+- maximumPoolSize: 线程池最大线程数，它表示在线程池中最多能创建多少个线程；这个参数是跟后面的阻塞队列联系紧密的；只有当阻塞队列满了，如果还有任务添加到线程池的话，会尝试new 一个Thread的进行救急处理，立马执行对应的runnable任务；如果继续添加任务到线程池，且线程池中的线程数已经达到了maximumPoolSize，那么线程就会就会执行reject操作.
+
+- keepAliveTime: 表示线程没有任务执行时最多保持多久时间会终止；默认情况下，只有当线程池中的线程数大于corePoolSize时，keepAliveTime才会起作用；即当线程池中的线程数大于corePoolSize时，如果一个线程空闲的时间达到keepAliveTime，则会终止，直到线程池中的线程数不超过corePoolSize。但是如果调用了allowCoreThreadTimeOut(boolean)方法并设置了参数为true，在线程池中的线程数不大于corePoolSize时，keepAliveTime参数也会起作用，直到线程池中的阻塞队列大小为0；
+
+- unit: 参数keepAliveTime的时间单位，有7种取值，在TimeUnit类中有7种静态属性（时间单位）
+
+- workQueue: 一个阻塞队列，用来存储等待执行的任务，这个参数的选择也很重要，会对线程池的运行过程产生重大影响，一般来说，这里的阻塞队列有以下几种选择　　
+
+  　　ArrayBlockingQueue;
+
+  　　LinkedBlockingQueue;
+
+  　　SynchronousQueue;
+
+  　　ArrayBlockingQueue和PriorityBlockingQueue使用较少，一般使用LinkedBlockingQueue和Synchronous。线程池的排队策略与BlockingQueue有关
+
+- threadFactory: 线程工厂，主要用来创建线程：默认值 DefaultThreadFactory；（可以自定义设定线程名称）
+
+- handler：表示当拒绝处理任务时的策略，就是上面提及的reject操作；有以下四种取值：
+
+  　　ThreadPoolExecutor.AbortPolicy:丢弃任务并抛出RejectedExecutionException异常。（默认handle）
+
+  　　ThreadPoolExecutor.DiscardPolicy：也是丢弃任务，但是不抛出异常。
+
+  　　ThreadPoolExecutor.DiscardOldestPolicy：丢弃队列最前面的任务，然后重新尝试执行任务（重复此过程）
+
+  　　ThreadPoolExecutor.CallerRunsPolicy：由调用线程处理该任务
+
+```java
+ThreadPoolExecutor executor =
+    new ThreadPoolExecutor(
+    1,
+    1,
+    60,
+    TimeUnit.SECONDS,
+    new ArrayBlockingQueue<>(1),
+    new ThreadPoolExecutor.DiscardOldestPolicy());
+```
+
 ## ThreadPoolExecutor
 
-ExecutorService是ThreadPoolExecutor的顶层接口，使用线程池中的线程执行每个提交任务，通常我们使用Executors的工厂方法来创建ExecutorService。
+ExecutorService是ThreadPoolExecutor的顶层接口，使用线程池中的线程执行每个提交任务，通常我们使用Executors的工厂方法来创建ExecutorService。线程池创建之后返回的都是ThreadPoolExecutor对象。
 
 ```java
 ExecutorService executorService = Executors.newFixedThreadPool(2);
