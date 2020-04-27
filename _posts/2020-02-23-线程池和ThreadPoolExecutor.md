@@ -63,7 +63,7 @@ public static ScheduledExecutorService newScheduledThreadPool(int corePoolSize) 
 
 ### Executors的方式
 
-![img](https://img2018.cnblogs.com/blog/985599/201905/985599-20190521225958821-275322901.png)
+![img](https://gitee.com/liurio/image_save/raw/master/flink/Executors.png)
 
 使用Executors创建线程池有两个弊端：
 
@@ -72,7 +72,7 @@ public static ScheduledExecutorService newScheduledThreadPool(int corePoolSize) 
 
 ### ThreadPoolExecutor的方式
 
-![img](https://img-blog.csdn.net/20180628125931735?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dhbmdteDE5OTMzMjg=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
+![img](https://gitee.com/liurio/image_save/raw/master/flink/executor接口图.png)))
 
 ThreadPoolExecutor的构造函数如下：
 
@@ -102,11 +102,11 @@ ExecutorService是ThreadPoolExecutor的顶层接口，我们创建线程池时�
 
   　　ArrayBlockingQueue;
 
-  　　LinkedBlockingQueue;
+    　　LinkedBlockingQueue;
 
-  　　SynchronousQueue;
+    　　SynchronousQueue;
 
-  　　ArrayBlockingQueue和PriorityBlockingQueue使用较少，一般使用LinkedBlockingQueue和Synchronous。线程池的排队策略与BlockingQueue有关
+    　　ArrayBlockingQueue和PriorityBlockingQueue使用较少，一般使用LinkedBlockingQueue和Synchronous。线程池的排队策略与BlockingQueue有关
 
 - threadFactory: 线程工厂，主要用来创建线程：默认值 DefaultThreadFactory；（可以自定义设定线程名称）
 
@@ -114,11 +114,11 @@ ExecutorService是ThreadPoolExecutor的顶层接口，我们创建线程池时�
 
   　　ThreadPoolExecutor.AbortPolicy:丢弃任务并抛出RejectedExecutionException异常。（默认handle）
 
-  　　ThreadPoolExecutor.DiscardPolicy：也是丢弃任务，但是不抛出异常。
+    　　ThreadPoolExecutor.DiscardPolicy：也是丢弃任务，但是不抛出异常。
 
-  　　ThreadPoolExecutor.DiscardOldestPolicy：丢弃队列最前面的任务，然后重新尝试执行任务（重复此过程）
+    　　ThreadPoolExecutor.DiscardOldestPolicy：丢弃队列最前面的任务，然后重新尝试执行任务（重复此过程）
 
-  　　ThreadPoolExecutor.CallerRunsPolicy：由调用线程处理该任务
+    　　ThreadPoolExecutor.CallerRunsPolicy：由调用线程处理该任务
 
 ```java
 ThreadPoolExecutor executor =
@@ -159,7 +159,7 @@ ThreadPoolExecutor用3个比特位表示runState， 29个比特位表示workerCo
 
 整体上流程如下：
 
-![img](https://upload-images.jianshu.io/upload_images/11183270-a01aea078d7f4178.png?imageMogr2/auto-orient/strip|imageView2/2/w/1200/format/webp)
+![img](https://gitee.com/liurio/image_save/raw/master/flink/threadpoolexecutors执行流程.jpg)
 
 当创建线程任务时，调用addWorker方法，可分为两部分
 
