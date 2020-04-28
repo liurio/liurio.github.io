@@ -24,7 +24,7 @@ Flink分布式快照算法Asynchronous Barrier Snapshots算法借鉴了经典的
 
 分布式系统是一个包含有限进程和有限消息通道的系统，这些进程和通道可以用一个有向图描述，其中节点表示进程，边表示通道。如下图所示：p、q分别是进程，c->c'则是消息通道，分布式系统快照是了保存分布式系统的state。分布式系统State是由进程状态和通道状态组成的。
 
-![img](https://upload-images.jianshu.io/upload_images/6574244-df06b6b15cce1a39?imageMogr2/auto-orient/strip|imageView2/2/w/533/format/webp)
+![img](https://gitee.com/liurio/image_save/raw/master/flink/chandy-lamport算法.jpg)
 
 - Event：分布式系统中发生的一个事件，在类似于Flink这样的分布式计算系统中从Source输入的新消息相当于一个事件
 - 进程状态：包含一个初始状态（initial state)，和持续发生的若干Events。初始状态可以理解为Flink中刚启动的计算节点，计算节点每处理一条Event，就转换到一个新的状态。
@@ -40,7 +40,7 @@ Flink分布式快照算法Asynchronous Barrier Snapshots算法借鉴了经典的
 2. 当Operator从某个input channel收到Barrier之后，会立即Block住这条通道，直到收到所有的input channel的Barrier，此时Operator会记录自身状态，并向自己所有的output channel广播Barrier。
 3. Sink接受Barrier的操作流程与Transformation Operator一样。当所有的Barrier都到达Sink之后，并且所有的Sink也完成了Checkpoint，这一轮Snapshot就完成了。
 
-![img](https://upload-images.jianshu.io/upload_images/6574244-9f325f33224892fc?imageMogr2/auto-orient/strip|imageView2/2/w/962/format/webp)
+![img](https://gitee.com/liurio/image_save/raw/master/flink/abs算法.jpg)
 
 上述算法中Block Input实际上是有负面效果的，一旦某个input channel发生延迟，Barrier迟迟未到，就会导致Operator上的其他通道全部堵塞，导致系统吞吐下降。但有个一好处是可以实现**Exactly Once**。
 
