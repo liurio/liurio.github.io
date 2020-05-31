@@ -16,7 +16,7 @@ presto是一个内存计算引擎，其之所以能在各个内存计算型数�
 
 ### presto架构
 
-![img](http://dl2.iteye.com/upload/attachment/0093/8747/1f3503b7-b9cc-3e83-b637-81e12f94b46f.jpg)
+![https://gitee.com/liurio/image_save/raw/master/presto/presto%E6%9E%B6%E6%9E%84.jpg](https://gitee.com/liurio/image_save/raw/master/presto/presto架构.jpg)
 
 presto采用典型的master-slave结构：
 
@@ -28,7 +28,7 @@ worker节点启动后会向Discovery Server服务注册，Coordinator从Discover
 
 ### presto数据模型
 
-![img](https://pic2.zhimg.com/80/v2-262b162a434dfde2e79ecb9080521495_720w.jpg)
+![https://gitee.com/liurio/image_save/raw/master/presto/presto%E6%95%B0%E6%8D%AE%E6%A8%A1%E5%9E%8B.jpg](https://gitee.com/liurio/image_save/raw/master/presto/presto数据模型.jpg)
 
 presto采用三层表结构：
 
@@ -68,7 +68,7 @@ presto设计了一个简单的数据存储抽象层，来满足在不同数据�
 
 Presto是一款内存计算型的引擎，所以对于内存管理必须做到精细，才能保证query有序、顺利的执行，部分发生饿死、死锁等情况。
 
-![img](https://upload-images.jianshu.io/upload_images/16265195-6f72538bfc094af2.png)
+![https://gitee.com/liurio/image_save/raw/master/presto/presto%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86.png](https://gitee.com/liurio/image_save/raw/master/presto/presto内存管理.png)
 
 presto把每个worker节点可分配内存（jvm Xmx）分成三份，分别是系统内存池(SystemMemoryPool)，保留内存池(ReservedMemoryPool)和普通内存池(GeneralMemoryPool)。在Presto启动时，它们会随着worker节点初始化时被分配，然后通过服务发现各个worker节点上报给coordinator节点。
 
